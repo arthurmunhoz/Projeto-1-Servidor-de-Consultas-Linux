@@ -1,27 +1,42 @@
 #!/usr/bin/python
 
 import cgi
+import cgitb
 import os
+from socket import *
 
 form = cgi.FieldStorage()                 # coleta dados do form de webserver.py
 
+serverName = 'localhost'
+serverPort = 12000
+backendSocket = socket(socket.AF_INET,socket.SOCK_DGRAM)
+
+backendSocket.bind(('', serverPort))
+
+backendSocket.listen(3)
+
 print('Content-type: text/html\n')        # define o tipo de conteudo para o restante do programa
 print('<title>TRABALHO 1 - REDES DE COMPUTADORES</title>')        # titulo da pagina html
-
-#exemplo para updates futuros no codigo de como capturar valores
-# Verificando se o usuario digitou o nome
-#if not 'user' in form:
-#    print('<h1>Who are you?</h1>')
-#else:
-#    print('<h1>Ola <i>%s</i>!</h1>' % cgi.escape(form['user'].value))
-
-# Verificando quais opcoes foram selecionadas para MAQUINA 1
+# para cada comando selecionado faz um request
 if 'm1ps' in form:
-	print('MAQUINA 1: PS <br><br>')
+	backendSocket.sendto("REQUEST " + cgi.escape(form['m1ps'].value, (serverName, serverPort))
+	response = clientSocket.recvfrom(2048)
+	print('<h1>PS: %s</h1><br><br>' %response)
 if 'm1df' in form:
-	print('MAQUINA 1: DF <br><br>')
+	backendSocket.sendto("REQUEST " + cgi.escape(form['m1df'].value, (serverName, serverPort))
+	response = clientSocket.recvfrom(2048)
+	print('<h2>RESPONSE: %s</h2><br><br>' %response)
 if 'm1finger' in form:
-	print('MAQUINA 1: FINGER <br><br>')
+	backendSocket.sendto("REQUEST " + cgi.escape(form['m1finger'].value, (serverName, serverPort))
+	response = clientSocket.recvfrom(2048)
+	print('<h3>RESPONSE FINGER: %s</h3><br><br>' %response)
 if 'm1uptime' in form:
-	print('MAQUINA 1: UPTIME <br><br>')
+	backendSocket.sendto("REQUEST " + cgi.escape(form['m1uptime'].value, (serverName, serverPort))
+	response = clientSocket.recvfrom(2048)
+	print('<h4>RESPONSE UPTIME: %s</h4><br><br>' %response)
+	
+backendSocket.close()
+
+
+
 
